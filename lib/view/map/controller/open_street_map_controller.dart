@@ -13,6 +13,10 @@ class OpenStreetMapController extends ChangeNotifier {
   AnimationController? _animationController;
   Animation<double>? _animation;
 
+  // Separate animation controller for marker clicks
+  AnimationController? _markerAnimationController;
+  Animation<double>? _markerAnimation;
+
   final List<Marker> _allMarkers = [];
   final List<Marker> _visibleMarkers = [];
   List<Marker> get markers => _visibleMarkers;
@@ -88,6 +92,10 @@ class OpenStreetMapController extends ChangeNotifier {
 
   void initializeAnimation(TickerProvider tickerProvider) {
     _animationController = AnimationController(duration: const Duration(milliseconds: 1500), vsync: tickerProvider);
+    _markerAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: tickerProvider,
+    );
   }
 
   void animateToAvcilar() {
@@ -122,6 +130,54 @@ class OpenStreetMapController extends ChangeNotifier {
     _animationController?.reset();
   }
 
+  /// The `_animateToPosition` function animates the map marker to a target position with a zoom effect.
+  ///
+  /// Args:
+  ///   targetPosition (LatLng): The `_animateToPosition` function you provided is responsible for
+  /// animating the movement of a marker on a map to a target position with a smooth transition. The
+  /// function calculates the intermediate positions and zoom levels to create a smooth animation effect.
+  ///
+  /// Returns:
+  ///   If the `_markerAnimationController` is `null`, the function will return early and nothing will be
+  /// executed beyond that point.
+  void _animateToPosition(LatLng targetPosition) {
+    if (_markerAnimationController == null) return;
+
+    // Reset animation controller completely
+    _markerAnimationController!.reset();
+
+    final currentPosition = _mapController.camera.center;
+    final currentZoom = _mapController.camera.zoom;
+    // Always zoom in a bit more for better detail
+    final targetZoom = currentZoom < 16.0 ? 16.0 : currentZoom + 1.0;
+
+    _markerAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _markerAnimationController!, curve: Curves.easeInOutCubic));
+
+    void animationListener() {
+      if (_markerAnimation == null) return;
+      final t = _markerAnimation!.value;
+      final lat = currentPosition.latitude + (targetPosition.latitude - currentPosition.latitude) * t;
+      final lng = currentPosition.longitude + (targetPosition.longitude - currentPosition.longitude) * t;
+      final zoom = currentZoom + (targetZoom - currentZoom) * t;
+
+      _mapController.move(LatLng(lat, lng), zoom);
+    }
+
+    void statusListener(AnimationStatus status) {
+      if (status == AnimationStatus.completed || status == AnimationStatus.dismissed) {
+        _markerAnimationController!.removeListener(animationListener);
+        _markerAnimationController!.removeStatusListener(statusListener);
+      }
+    }
+
+    _markerAnimationController!.addListener(animationListener);
+    _markerAnimationController!.addStatusListener(statusListener);
+    _markerAnimationController!.forward();
+  }
+
   Marker _createMarker({required LatLng position, required TransportType type, required String name}) {
     if (_context == null) throw Exception('Context not initialized');
 
@@ -134,6 +190,7 @@ class OpenStreetMapController extends ChangeNotifier {
       child: GestureDetector(
         onTap: () {
           HapticFeedback.heavyImpact();
+          _animateToPosition(position);
         },
         child: Container(
           decoration: BoxDecoration(
@@ -150,6 +207,7 @@ class OpenStreetMapController extends ChangeNotifier {
   @override
   void dispose() {
     _animationController?.dispose();
+    _markerAnimationController?.dispose();
     super.dispose();
   }
 }
