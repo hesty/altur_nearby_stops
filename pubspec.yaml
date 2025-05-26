@@ -21,14 +21,21 @@ dependencies:
   # State Management
   provider: ^6.1.5
 
+  # Localization
+  easy_localization: ^3.0.7+1
+
 dev_dependencies:
 
   flutter_test:
     sdk: flutter
 
-  # Linting
   flutter_lints: ^5.0.0
+  build_runner: ^2.4.15
+  
 
 flutter:
   uses-material-design: true
+
+  assets:
+    - assets/translations/
 
