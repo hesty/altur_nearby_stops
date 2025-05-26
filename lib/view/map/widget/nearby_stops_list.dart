@@ -7,8 +7,31 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class NearbyStopsList extends StatelessWidget {
+class NearbyStopsList extends StatefulWidget {
   const NearbyStopsList({super.key});
+
+  @override
+  State<NearbyStopsList> createState() => _NearbyStopsListState();
+}
+
+class _NearbyStopsListState extends State<NearbyStopsList> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    // Set the scroll controller in the map controller after the widget is built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final controller = context.read<OpenStreetMapController>();
+      controller.setNearbyStopsScrollController(_scrollController);
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +59,7 @@ class NearbyStopsList extends StatelessWidget {
               ),
               Expanded(
                 child: ListView.builder(
+                  controller: _scrollController,
                   scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   itemCount: controller.nearbyStops.length,

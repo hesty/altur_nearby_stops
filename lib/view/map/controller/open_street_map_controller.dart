@@ -44,6 +44,9 @@ class OpenStreetMapController extends ChangeNotifier {
   Polyline? _routePolyline;
   Polyline? get routePolyline => _routePolyline;
 
+  // Scroll controller for nearby stops list
+  ScrollController? _nearbyStopsScrollController;
+
   BuildContext? _context;
 
   OpenStreetMapController();
@@ -254,6 +257,10 @@ class OpenStreetMapController extends ChangeNotifier {
         onTap: () {
           HapticFeedback.heavyImpact();
           _animateToPosition(position);
+          // Draw polyline from user location to clicked marker
+          _drawRouteToStop(position);
+          // Scroll to the clicked stop in the nearby stops list
+          scrollToStopInList(position);
         },
         child: Container(
           decoration: BoxDecoration(
@@ -425,6 +432,39 @@ class OpenStreetMapController extends ChangeNotifier {
   void clearRoute() {
     _routePolyline = null;
     notifyListeners();
+  }
+
+  /// Set the scroll controller for the nearby stops list
+  void setNearbyStopsScrollController(ScrollController scrollController) {
+    _nearbyStopsScrollController = scrollController;
+  }
+
+  /// Scroll to a specific stop in the nearby stops list
+  void scrollToStopInList(LatLng stopPosition) {
+    if (_nearbyStopsScrollController == null || _nearbyStops.isEmpty) return;
+
+    // Find the index of the stop in the nearby stops list
+    final stopIndex = _nearbyStops.indexWhere(
+      (nearbyStop) =>
+          nearbyStop.stopData.position.latitude == stopPosition.latitude &&
+          nearbyStop.stopData.position.longitude == stopPosition.longitude,
+    );
+
+    if (stopIndex != -1) {
+      // Calculate the scroll position (each card is 200 width + 12 margin)
+      const cardWidth = 200.0;
+      const cardMargin = 12.0;
+      const listPadding = 16.0;
+
+      final scrollPosition = (stopIndex * (cardWidth + cardMargin)) - listPadding;
+
+      // Animate to the calculated position
+      _nearbyStopsScrollController!.animateTo(
+        scrollPosition.clamp(0.0, _nearbyStopsScrollController!.position.maxScrollExtent),
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+    }
   }
 
   @override
