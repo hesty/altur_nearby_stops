@@ -187,6 +187,7 @@ class OpenStreetMapController extends ChangeNotifier {
       point: position,
       width: config.size,
       height: config.size,
+      rotate: true,
       child: GestureDetector(
         onTap: () {
           HapticFeedback.heavyImpact();
