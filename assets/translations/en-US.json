@@ -5,5 +5,12 @@
     "bus": "Bus",
     "tram": "Tram"
   },
-  "nearby_stops": "Stops (By Distance)"
+  "nearby_stops": "Stops (By Distance)",
+  "location_permission": {
+    "title": "Location Permission Required",
+    "description": "We need your location permission to show nearby stops. Please enable location permission from settings.",
+    "go_to_settings": "Go to Settings",
+    "dismiss": "Dismiss",
+    "settings_path": "Settings > Privacy & Security > Location Services"
+  }
 }

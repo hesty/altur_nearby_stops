@@ -5,5 +5,12 @@
     "bus": "Otobüs",
     "tram": "Tramvay"
   },
-  "nearby_stops": "Duraklar (Mesafeye Göre)"
+  "nearby_stops": "Duraklar (Mesafeye Göre)",
+  "location_permission": {
+    "title": "Konum İzni Gerekli",
+    "description": "Yakındaki durakları gösterebilmek için konum izninize ihtiyacımız var. Lütfen ayarlardan konum iznini etkinleştirin.",
+    "go_to_settings": "Ayarlara Git",
+    "dismiss": "Kapat",
+    "settings_path": "Ayarlar > Gizlilik ve Güvenlik > Konum Hizmetleri"
+  }
 }

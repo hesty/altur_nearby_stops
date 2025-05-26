@@ -4,6 +4,7 @@ import 'package:altur_nearby_stops/view/map/widget/transport_toggle_button.dart'
 import 'package:altur_nearby_stops/view/map/widget/change_language_widget.dart';
 import 'package:altur_nearby_stops/view/map/widget/app_theme_change_widget.dart';
 import 'package:altur_nearby_stops/view/map/widget/nearby_stops_list.dart';
+import 'package:altur_nearby_stops/view/map/widget/location_permission_banner.dart';
 import 'package:altur_nearby_stops/core/extension/context.dart';
 import 'package:altur_nearby_stops/core/constants/enum/app_theme_enum.dart';
 import 'package:altur_nearby_stops/core/provider/theme_notifier.dart';
@@ -19,17 +20,35 @@ class OpenStreetMapView extends StatefulWidget {
   State<OpenStreetMapView> createState() => _OpenStreetMapViewState();
 }
 
-class _OpenStreetMapViewState extends State<OpenStreetMapView> with TickerProviderStateMixin {
+class _OpenStreetMapViewState extends State<OpenStreetMapView> with TickerProviderStateMixin, WidgetsBindingObserver {
+  final tileUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
   @override
   void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+
     // context read open street map controller
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final controller = context.read<OpenStreetMapController>();
       controller.initializeWithContext(context);
       controller.initializeAnimation(this);
     });
+  }
 
-    super.initState();
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+      // Check location permission when app resumes (user might have changed settings)
+      final controller = context.read<OpenStreetMapController>();
+      controller.checkLocationPermissionStatus();
+    }
   }
 
   @override
@@ -54,7 +73,7 @@ class _OpenStreetMapViewState extends State<OpenStreetMapView> with TickerProvid
                   ),
                   children: [
                     TileLayer(
-                      urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                      urlTemplate: tileUrl,
                       tileBuilder: themeNotifier.currentThemeEnum == AppThemes.dark ? darkModeTileBuilder : null,
                     ),
                     if (controller.routePolyline != null) PolylineLayer(polylines: [controller.routePolyline!]),
@@ -118,7 +137,7 @@ class _OpenStreetMapViewState extends State<OpenStreetMapView> with TickerProvid
 
                 // Location button positioned in the bottom-right corner
                 Positioned(
-                  bottom: controller.nearbyStops.isNotEmpty ? 176 : 16,
+                  bottom: (controller.nearbyStops.isNotEmpty && !controller.isLocationPermissionDenied) ? 176 : 16,
                   right: 16,
                   child: GestureDetector(
                     onTap: () => controller.getCurrentLocation(),
@@ -142,8 +161,15 @@ class _OpenStreetMapViewState extends State<OpenStreetMapView> with TickerProvid
                   ),
                 ),
 
+                // Location permission banner when permission is denied
+                controller.isLocationPermissionDenied
+                    ? const Positioned(bottom: 0, left: 0, right: 0, child: LocationPermissionBanner())
+                    : const SizedBox.shrink(),
+
                 // Nearby stops list positioned at the bottom
-                Positioned(bottom: 0, left: 0, right: 0, child: const NearbyStopsList()),
+                controller.isLocationPermissionDenied
+                    ? const SizedBox.shrink()
+                    : Positioned(bottom: 0, left: 0, right: 0, child: const NearbyStopsList()),
               ],
             );
           },

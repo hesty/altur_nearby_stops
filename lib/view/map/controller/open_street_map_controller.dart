@@ -47,6 +47,10 @@ class OpenStreetMapController extends ChangeNotifier {
   // Scroll controller for nearby stops list
   ScrollController? _nearbyStopsScrollController;
 
+  // Location permission status
+  bool _isLocationPermissionDenied = false;
+  bool get isLocationPermissionDenied => _isLocationPermissionDenied;
+
   BuildContext? _context;
 
   OpenStreetMapController();
@@ -319,20 +323,20 @@ class OpenStreetMapController extends ChangeNotifier {
     }
 
     permission = await Geolocator.checkPermission();
+    print('permission: $permission');
     if (permission == LocationPermission.denied) {
+      // Request permission - this will show the native dialog
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        // Permissions are denied, next time you could try
-        // requesting permissions again (this is also where
-        // Android's shouldShowRequestPermissionRationale
-        // returned true. According to Android guidelines
-        // your App should show an explanatory UI now.
+        _isLocationPermissionDenied = true;
+        notifyListeners();
         return Future.error('Location permissions are denied');
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
-      // Permissions are denied forever, handle appropriately.
+      _isLocationPermissionDenied = true;
+      notifyListeners();
       return Future.error('Location permissions are permanently denied, we cannot request permissions.');
     }
 
@@ -359,12 +363,33 @@ class OpenStreetMapController extends ChangeNotifier {
       // Calculate nearby stops
       _calculateNearbyStops();
 
+      // Reset permission denied state if location was successfully obtained
+      _isLocationPermissionDenied = false;
+
       _animateToPosition(userLocation);
       HapticFeedback.heavyImpact();
       notifyListeners();
     } catch (e) {
-      // Handle errors silently - the native dialog will show for permissions
+      // Handle location permission errors
       debugPrint('Location error: $e');
+    }
+  }
+
+  /// Check and update location permission status
+  Future<void> checkLocationPermissionStatus() async {
+    try {
+      final permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.whileInUse || permission == LocationPermission.always) {
+        _isLocationPermissionDenied = false;
+        notifyListeners();
+        // Try to get location if permission is now granted
+        getCurrentLocation();
+      } else if (permission == LocationPermission.deniedForever) {
+        _isLocationPermissionDenied = true;
+        notifyListeners();
+      }
+    } catch (e) {
+      debugPrint('Error checking location permission: $e');
     }
   }
 
