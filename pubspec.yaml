@@ -13,6 +13,13 @@ dependencies:
     
   # UI
   cupertino_icons: ^1.0.8
+  
+  # !!! In real projects these packages are not needed, they are used for better use case design. !!!
+  flex_color_scheme: ^8.2.0
+  google_fonts: ^6.2.1
+
+  # State Management
+  provider: ^6.1.5
 
 dev_dependencies:
 

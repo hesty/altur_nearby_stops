@@ -1,35 +1,28 @@
+import 'package:altur_nearby_stops/core/provider/app_provider.dart';
+import 'package:altur_nearby_stops/core/provider/theme_notifier.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-void main() {
-  runApp(const MyApp());
+/// The main function initializes the app, sets up providers, localization, and runs the app.
+Future<void> main() async {
+  await _appInit();
+  runApp(MultiProvider(providers: AppProvider.instance.providerList, child: const RunApp()));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+/// The `_appInit` function ensures Flutter is initialized, initializes the cache manager, and ensures Easy Localization is initialized.
+Future<void> _appInit() async {
+  WidgetsFlutterBinding.ensureInitialized();
+}
 
-  // This widget is the root of your application.
+/// The `RunApp` class is a Flutter widget that sets up a MaterialApp with routing and localization configurations.
+class RunApp extends StatelessWidget {
+  const RunApp({super.key});
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Altur Nearby Stops',
-      theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple)),
-      home: const MyHomePage(title: 'Altur Nearby Stops'),
+      debugShowCheckedModeBanner: false,
+      theme: context.watch<ThemeNotifier>().currentTheme,
+      home: Scaffold(appBar: AppBar(title: const Text('Altur Nearby Stops'))),
     );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold();
   }
 }
