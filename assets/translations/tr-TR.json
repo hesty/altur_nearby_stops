@@ -4,5 +4,6 @@
     "metrobus": "Metrobüs",
     "bus": "Otobüs",
     "tram": "Tramvay"
-  }
+  },
+  "nearby_stops": "Duraklar (Mesafeye Göre)"
 }

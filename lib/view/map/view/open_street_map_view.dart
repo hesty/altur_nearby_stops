@@ -3,6 +3,7 @@ import 'package:altur_nearby_stops/view/map/model/marker_model.dart';
 import 'package:altur_nearby_stops/view/map/widget/transport_toggle_button.dart';
 import 'package:altur_nearby_stops/view/map/widget/change_language_widget.dart';
 import 'package:altur_nearby_stops/view/map/widget/app_theme_change_widget.dart';
+import 'package:altur_nearby_stops/view/map/widget/nearby_stops_list.dart';
 import 'package:altur_nearby_stops/core/extension/context.dart';
 import 'package:altur_nearby_stops/core/constants/enum/app_theme_enum.dart';
 import 'package:altur_nearby_stops/core/provider/theme_notifier.dart';
@@ -55,8 +56,8 @@ class _OpenStreetMapViewState extends State<OpenStreetMapView> with TickerProvid
                     TileLayer(
                       urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                       tileBuilder: themeNotifier.currentThemeEnum == AppThemes.dark ? darkModeTileBuilder : null,
-                      userAgentPackageName: 'com.altur.nearby_stops',
                     ),
+                    if (controller.routePolyline != null) PolylineLayer(polylines: [controller.routePolyline!]),
                     MarkerLayer(markers: controller.markers),
                   ],
                 ),
@@ -114,6 +115,35 @@ class _OpenStreetMapViewState extends State<OpenStreetMapView> with TickerProvid
                     ),
                   ),
                 ),
+
+                // Location button positioned in the bottom-right corner
+                Positioned(
+                  bottom: controller.nearbyStops.isNotEmpty ? 176 : 16,
+                  right: 16,
+                  child: GestureDetector(
+                    onTap: () => controller.getCurrentLocation(),
+                    child: Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: context.colorScheme.primary,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: context.colorScheme.onPrimary, width: 2),
+                        boxShadow: [
+                          BoxShadow(
+                            color: context.colorScheme.shadow.withAlpha(51),
+                            spreadRadius: 1,
+                            blurRadius: 4,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Icon(Icons.near_me, color: context.colorScheme.onPrimary, size: 24),
+                    ),
+                  ),
+                ),
+
+                // Nearby stops list positioned at the bottom
+                Positioned(bottom: 0, left: 0, right: 0, child: const NearbyStopsList()),
               ],
             );
           },

@@ -4,5 +4,6 @@
     "metrobus": "Metrobus",
     "bus": "Bus",
     "tram": "Tram"
-  }
+  },
+  "nearby_stops": "Stops (By Distance)"
 }

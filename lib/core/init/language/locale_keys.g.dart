@@ -8,5 +8,6 @@ abstract class  LocaleKeys {
   static const transport_type_bus = 'transport_type.bus';
   static const transport_type_tram = 'transport_type.tram';
   static const transport_type = 'transport_type';
+  static const nearby_stops = 'nearby_stops';
 
 }
