@@ -14,7 +14,7 @@ final class DarkTheme extends AppTheme with IDarkThemeInterface {
   static final DarkTheme instance = _instance ??= DarkTheme._init();
 
   @override
-  ThemeData get theme => FlexThemeData.light(
+  ThemeData get theme => FlexThemeData.dark(
     scheme: FlexScheme.redM3,
     surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,
     subThemesData: const FlexSubThemesData(blendOnLevel: 10, blendOnColors: false, useM2StyleDividerInM3: true),

@@ -1,6 +1,11 @@
 import 'package:altur_nearby_stops/view/map/controller/open_street_map_controller.dart';
 import 'package:altur_nearby_stops/view/map/model/marker_model.dart';
 import 'package:altur_nearby_stops/view/map/widget/transport_toggle_button.dart';
+import 'package:altur_nearby_stops/view/map/widget/change_language_widget.dart';
+import 'package:altur_nearby_stops/view/map/widget/app_theme_change_widget.dart';
+import 'package:altur_nearby_stops/core/extension/context.dart';
+import 'package:altur_nearby_stops/core/constants/enum/app_theme_enum.dart';
+import 'package:altur_nearby_stops/core/provider/theme_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -30,8 +35,8 @@ class _OpenStreetMapViewState extends State<OpenStreetMapView> with TickerProvid
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Consumer<OpenStreetMapController>(
-          builder: (context, controller, child) {
+        child: Consumer2<OpenStreetMapController, ThemeNotifier>(
+          builder: (context, controller, themeNotifier, child) {
             return Stack(
               children: [
                 FlutterMap(
@@ -47,10 +52,15 @@ class _OpenStreetMapViewState extends State<OpenStreetMapView> with TickerProvid
                     },
                   ),
                   children: [
-                    TileLayer(urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'),
+                    TileLayer(
+                      urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                      tileBuilder: themeNotifier.currentThemeEnum == AppThemes.dark ? darkModeTileBuilder : null,
+                      userAgentPackageName: 'com.altur.nearby_stops',
+                    ),
                     MarkerLayer(markers: controller.markers),
                   ],
                 ),
+
                 // Toggle buttons positioned in the top-left corner
                 Positioned(
                   top: 16,
@@ -76,6 +86,32 @@ class _OpenStreetMapViewState extends State<OpenStreetMapView> with TickerProvid
                         onToggle: controller.toggleTram,
                       ),
                     ],
+                  ),
+                ),
+
+                // Language and theme widgets positioned in the top-right corner
+                Positioned(
+                  top: 16,
+                  right: 16,
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: context.colorScheme.surfaceContainerHighest,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: context.colorScheme.onPrimary, width: 2),
+                      boxShadow: [
+                        BoxShadow(
+                          color: context.colorScheme.shadow.withAlpha(51),
+                          spreadRadius: 1,
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [const AppThemeChangeWidget(), const SizedBox(height: 4), const ChangeLanguageWidget()],
+                    ),
                   ),
                 ),
               ],
