@@ -1,6 +1,7 @@
 import 'package:altur_nearby_stops/core/constants/app_constants.dart';
 import 'package:altur_nearby_stops/core/init/language/language_manager.dart';
 import 'package:altur_nearby_stops/core/init/language/locale_keys.g.dart';
+import 'package:altur_nearby_stops/core/init/navigation/navigation_manager.dart';
 import 'package:altur_nearby_stops/core/provider/app_provider.dart';
 import 'package:altur_nearby_stops/core/provider/theme_notifier.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -35,14 +36,14 @@ class RunApp extends StatelessWidget {
   const RunApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       theme: context.watch<ThemeNotifier>().currentTheme,
       locale: context.locale,
       supportedLocales: context.supportedLocales,
       localizationsDelegates: context.localizationDelegates,
       title: LocaleKeys.title.tr(),
-      home: Scaffold(appBar: AppBar(title: Text(''))),
+      routerConfig: NavigationManager().router,
     );
   }
 }

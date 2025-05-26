@@ -24,6 +24,9 @@ dependencies:
   # Localization
   easy_localization: ^3.0.7+1
 
+  # Navigation
+  go_router: ^15.1.2
+
 dev_dependencies:
 
   flutter_test:
