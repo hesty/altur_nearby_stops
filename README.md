@@ -6,6 +6,12 @@ Flutter application for finding nearby public transportation stops in Istanbul w
 
 ---
 
+## 📦 APK İndir / Download APK
+
+**Dosya**: [Link](https://github.com/hesty/altur_nearby_stops/raw/refs/heads/main/apk/app-release.apk) `apk/app-release.apk` (23MB)
+
+---
+
 ## 🇹🇷 Türkçe
 
 ### Proje Amacı
@@ -33,8 +39,8 @@ Altur study case'i için geliştirilmiş İstanbul toplu taşıma durak bulucu u
 
 #### UI Framework
 - **Material Design 3**: Modern UI tasarım sistemi
-- **flex_color_scheme**: ^8.2.0 - Gelişmiş tema sistemi
-- **google_fonts**: ^6.2.1 - Özel font desteği
+- **flex_color_scheme**: ^8.2.0 - Gelişmiş tema sistemi (Case Özelinde Kullanıldı Gercek Projede Kullanilmayan Ihtiyac Yok)
+- **google_fonts**: ^6.2.1 - Özel font desteği (Case Özelinde Kullanıldı Gercek Projede Kullanilmayan Ihtiyac Yok)
 
 #### Navigasyon ve Lokalizasyon
 - **go_router**: ^15.1.2 - Declarative routing
@@ -112,10 +118,7 @@ flutter pub get
 flutter run
 ```
 
-### Development Time
-**Total**: 4 - 5 hours
 
----
 
 ## 📱 Ekran Görüntüleri / Screenshots
 
@@ -123,25 +126,21 @@ flutter run
 ![Map View](screenshot/screenshot_20250527_005933.png)
 
 ### Ulaşım Filtreleme / Transport Filtering
-![Filtering](screenshot/screenshot_20250527_005649.png)
+![Filtering](screenshot/screenshot_20250527_010024.png)
 
 ### Durak Listesi / Stops List
 ![Stops List](screenshot/screenshot_20250527_010014.png)
 
 ### Rota Çizimi / Route Drawing
-![Route](screenshot/screenshot_20250527_010024.png)
+![Route](screenshot/screenshot_20250527_005649.png)
 
 ### Koyu Tema / Dark Theme
 ![Dark Mode](screenshot/screenshot_20250527_010137.png)
 
----
+## Konum Servisi Gerekli Banner / Location Services Required Banner
+![permission](screenshot/screenshot_20250527_010137.png)
 
-## 📦 APK İndir / Download APK
 
-**Dosya**: `apk/app-release.apk` (23MB)
-**Sürüm**: 1.0.0+1
-
----
 
 ## 👨‍💻 Geliştirici / Developer
 
