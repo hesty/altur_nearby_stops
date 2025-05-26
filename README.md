@@ -135,7 +135,7 @@ flutter run
 ![Route](screenshot/screenshot_20250527_005649.png)
 
 ### Koyu Tema / Dark Theme
-![Dark Mode](screenshot/screenshot_20250527_010137.png)
+![Dark Mode](screenshot/screenshot_20250527_010211.png)
 
 ## Konum Servisi Gerekli Banner / Location Services Required Banner
 ![permission](screenshot/screenshot_20250527_010137.png)
