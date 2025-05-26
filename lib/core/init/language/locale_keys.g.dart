@@ -2,6 +2,11 @@
 
 // ignore_for_file: constant_identifier_names
 
-abstract class LocaleKeys {
+abstract class  LocaleKeys {
   static const title = 'title';
+  static const transport_type_metrobus = 'transport_type.metrobus';
+  static const transport_type_bus = 'transport_type.bus';
+  static const transport_type_tram = 'transport_type.tram';
+  static const transport_type = 'transport_type';
+
 }

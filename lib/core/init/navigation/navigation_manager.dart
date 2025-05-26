@@ -1,5 +1,5 @@
-import 'package:altur_nearby_stops/core/view/map/controller/map_controller.dart';
-import 'package:altur_nearby_stops/core/view/map/view/map_view.dart';
+import 'package:altur_nearby_stops/view/map/controller/open_street_map_controller.dart';
+import 'package:altur_nearby_stops/view/map/view/open_street_map_view.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -31,7 +31,7 @@ class NavigationManager {
       GoRoute(
         path: NavigationEnum.map.rawValue,
         builder: (BuildContext context, GoRouterState state) =>
-            ChangeNotifierProvider(create: (context) => MapController(), child: MapView()),
+            ChangeNotifierProvider(create: (context) => OpenStreetMapController(), child: OpenStreetMapView()),
       ),
     ],
   );

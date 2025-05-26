@@ -13,7 +13,6 @@ dependencies:
     
   # UI
   cupertino_icons: ^1.0.8
-  
   # !!! In real projects these packages are not needed, they are used for better use case design. !!!
   flex_color_scheme: ^8.2.0
   google_fonts: ^6.2.1
@@ -26,6 +25,10 @@ dependencies:
 
   # Navigation
   go_router: ^15.1.2
+
+  # Utils
+  flutter_map: ^8.1.1
+  latlong2: ^0.9.1
 
 dev_dependencies:
 

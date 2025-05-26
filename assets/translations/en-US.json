@@ -1,3 +1,8 @@
 {
-  "title": "Altur Nearby Stops"
+  "title": "Altur Nearby Stops",
+  "transport_type": {
+    "metrobus": "Metrobus",
+    "bus": "Bus",
+    "tram": "Tram"
+  }
 }

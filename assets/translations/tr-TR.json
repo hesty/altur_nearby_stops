@@ -1,3 +1,8 @@
 {
-  "title": "Altur Yakın Duraklar"
+  "title": "Altur Yakın Duraklar",
+  "transport_type": {
+    "metrobus": "Metrobus",
+    "bus": "Otobüs",
+    "tram": "Tramvay"
+  }
 }
