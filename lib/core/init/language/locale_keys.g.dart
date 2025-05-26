@@ -15,5 +15,9 @@ abstract class  LocaleKeys {
   static const location_permission_dismiss = 'location_permission.dismiss';
   static const location_permission_settings_path = 'location_permission.settings_path';
   static const location_permission = 'location_permission';
+  static const location_services_title = 'location_services.title';
+  static const location_services_description = 'location_services.description';
+  static const location_services_go_to_settings = 'location_services.go_to_settings';
+  static const location_services = 'location_services';
 
 }

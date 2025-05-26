@@ -51,6 +51,10 @@ class OpenStreetMapController extends ChangeNotifier {
   bool _isLocationPermissionDenied = false;
   bool get isLocationPermissionDenied => _isLocationPermissionDenied;
 
+  // Location services status
+  bool _isLocationServicesDisabled = false;
+  bool get isLocationServicesDisabled => _isLocationServicesDisabled;
+
   BuildContext? _context;
 
   OpenStreetMapController();
@@ -310,20 +314,23 @@ class OpenStreetMapController extends ChangeNotifier {
   /// When the location services are not enabled or permissions
   /// are denied the `Future` will return an error.
   Future<Position> _determinePosition() async {
-    bool serviceEnabled;
+    bool serviceEnabled = false;
     LocationPermission permission;
 
     // Test if location services are enabled.
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      // Location services are not enabled don't continue
-      // accessing the position and request users of the
-      // App to enable the location services.
+      // Location services are not enabled
+      _isLocationServicesDisabled = true;
+      _isLocationPermissionDenied = false; // Reset permission denied state
+      notifyListeners();
       return Future.error('Location services are disabled.');
+    } else {
+      // Location services are enabled, reset the disabled state
+      _isLocationServicesDisabled = false;
     }
 
     permission = await Geolocator.checkPermission();
-    print('permission: $permission');
     if (permission == LocationPermission.denied) {
       // Request permission - this will show the native dialog
       permission = await Geolocator.requestPermission();
@@ -363,8 +370,9 @@ class OpenStreetMapController extends ChangeNotifier {
       // Calculate nearby stops
       _calculateNearbyStops();
 
-      // Reset permission denied state if location was successfully obtained
+      // Reset both permission denied and services disabled states if location was successfully obtained
       _isLocationPermissionDenied = false;
+      _isLocationServicesDisabled = false;
 
       _animateToPosition(userLocation);
       HapticFeedback.heavyImpact();
@@ -378,19 +386,37 @@ class OpenStreetMapController extends ChangeNotifier {
   /// Check and update location permission status
   Future<void> checkLocationPermissionStatus() async {
     try {
+      // First check if location services are enabled
+      final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        _isLocationServicesDisabled = true;
+        _isLocationPermissionDenied = false;
+        notifyListeners();
+        return;
+      }
+
+      // If services are enabled, check permissions
       final permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.whileInUse || permission == LocationPermission.always) {
         _isLocationPermissionDenied = false;
+        _isLocationServicesDisabled = false;
         notifyListeners();
         // Try to get location if permission is now granted
         getCurrentLocation();
       } else if (permission == LocationPermission.deniedForever) {
         _isLocationPermissionDenied = true;
+        _isLocationServicesDisabled = false;
         notifyListeners();
       }
     } catch (e) {
       debugPrint('Error checking location permission: $e');
     }
+  }
+
+  Future<void> checkLocationServicesStatus() async {
+    final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    _isLocationServicesDisabled = !serviceEnabled;
+    notifyListeners();
   }
 
   /// Calculate visible stops sorted by distance to user's location

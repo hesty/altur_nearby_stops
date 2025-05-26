@@ -12,5 +12,10 @@
     "go_to_settings": "Go to Settings",
     "dismiss": "Dismiss",
     "settings_path": "Settings > Privacy & Security > Location Services"
+  },
+  "location_services": {
+    "title": "Location Services Disabled",
+    "description": "Location services need to be enabled to show nearby stops. Please enable location services from settings.",
+    "go_to_settings": "Go to Settings"
   }
 }

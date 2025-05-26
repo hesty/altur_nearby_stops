@@ -12,5 +12,10 @@
     "go_to_settings": "Ayarlara Git",
     "dismiss": "Kapat",
     "settings_path": "Ayarlar > Gizlilik ve Güvenlik > Konum Hizmetleri"
+  },
+  "location_services": {
+    "title": "Konum Servisleri Kapalı",
+    "description": "Yakındaki durakları gösterebilmek için konum servislerinin açık olması gerekiyor. Lütfen ayarlardan konum servislerini etkinleştirin.",
+    "go_to_settings": "Ayarlara Git"
   }
 }
